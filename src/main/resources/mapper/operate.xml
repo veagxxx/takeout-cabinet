@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhy.takeoutcabinet.mapper.OrderOperateMapper">
+    <resultMap id="OperateBaseResultMap" type="OrderOperate">
+        <id property="operateId" column="operate_id"/>
+        <result property="operateMan" column="operate_man"/>
+        <result property="operateTime" column="operate_time"/>
+        <result property="beforeStatus" column="before_operate_status"/>
+        <result property="afterStatus" column="after_operate_status"/>
+        <result property="note" column="note"/>
+    </resultMap>
+
+    <select id="findAllOperationByOrderId" resultMap="OperateBaseResultMap">
+        select operate_id, operate_man, operate_time, before_operate_status, after_operate_status, note
+        from order_operate_tb where oid = #{orderId}
+    </select>
+
+    <insert id="insertOperate" parameterType="OrderOperate">
+        insert into order_operate_tb
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="order.orderId != null"> oid, </if>
+            <if test="operateMan != null and operateMan != ''"> operate_man, </if>
+            <if test="operateTime != null"> operate_time, </if>
+            <if test="beforeStatus != null and beforeStatus != 0"> before_operate_status, </if>
+            <if test="afterStatus != null and afterStatus != 0"> after_operate_status, </if>
+            <if test="note != null and note != ''"> note , </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="order.orderId != null"> #{order.orderId}, </if>
+            <if test="operateMan != null and operateMan != ''"> #{operateMan}, </if>
+            <if test="operateTime != null"> #{operateTime}, </if>
+            <if test="beforeStatus != null and beforeStatus != 0"> #{beforeStatus}, </if>
+            <if test="afterStatus != null and afterStatus != 0"> #{afterStatus}, </if>
+            <if test="note != null and note != ''"> #{note}, </if>
+        </trim>
+    </insert>
+</mapper>

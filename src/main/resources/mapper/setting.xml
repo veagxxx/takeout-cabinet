@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhy.takeoutcabinet.mapper.SettingMapper">
+    <sql id="setting_property">
+        <if test="true">
+            id,
+            header_bgc,
+            header_font_color,
+            side_bgc,
+            side_font_color,
+            login_animation,
+            login_bg_image,
+            is_use
+        </if>
+    </sql>
+    <!-- 查询所有设置信息 -->
+    <select id="querySettingInfo" resultType="SettingInfo">
+        select <include refid="setting_property"/>
+        from system_setting_tb;
+    </select>
+    <!-- 查询正在使用的设置 -->
+    <select id="queryOneSettingInfo" resultType="SettingInfo">
+        select <include refid="setting_property"/>
+        from system_setting_tb
+        where is_use = 1
+    </select>
+    <!-- 修改设置信息 -->
+    <update id="updateSetting" parameterType="SettingInfo">
+        update system_setting_tb
+        <set>
+            <if test="headerBgc != null">header_bgc = #{headerBgc},</if>
+            <if test="headerFontColor != null">header_font_color = #{headerFontColor},</if>
+            <if test="sideBgc != null">side_bgc = #{sideBgc},</if>
+            <if test="sideFontColor != null">side_font_color = #{sideFontColor},</if>
+            <if test="loginAnimation != null">login_animation = #{loginAnimation},</if>
+            <if test="loginBgImage != null">login_bg_image = #{loginBgImage},</if>
+            <if test="isUse != null">is_use = #{isUse},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!-- 添加设置信息 -->
+    <insert id="insertSettingInfo" parameterType="SettingInfo">
+        insert into system_setting_tb
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="headerBgc != null">header_bgc,</if>
+            <if test="headerFontColor != null">header_font_color,</if>
+            <if test="sideBgc != null">side_bgc,</if>
+            <if test="sideFontColor != null">side_font_color,</if>
+            <if test="loginAnimation != null">login_animation,</if>
+            <if test="loginBgImage !=null">login_bg_image,</if>
+            <if test="isUse != null">is_use,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="headerBgc != null">#{headerBgc},</if>
+            <if test="headerFontColor != null">#{headerFontColor},</if>
+            <if test="sideBgc != null">#{sideBgc},</if>
+            <if test="sideFontColor != null">#{sideFontColor},</if>
+            <if test="loginAnimation != null">#{loginAnimation},</if>
+            <if test="loginBgImage !=null">#{loginBgImage},</if>
+            <if test="isUse != null">#{isUse},</if>
+        </trim>
+    </insert>
+</mapper>

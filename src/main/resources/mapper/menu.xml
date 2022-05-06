@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhy.takeoutcabinet.mapper.MenuMapper">
+    <resultMap id="menuResultMap" type="Menu">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_name" property="menuName"/>
+        <collection property="submenus" ofType="Submenu">
+            <id column="submenu_id" property="submenuId"/>
+            <result column="name" property="name"/>
+            <result column="path" property="path"/>
+        </collection>
+    </resultMap>
+    <select id="queryAllMenu" resultMap="menuResultMap">
+        select m.*, s.* from menus m left outer join submenus s on m.menu_id = s.mid
+    </select>
+</mapper>

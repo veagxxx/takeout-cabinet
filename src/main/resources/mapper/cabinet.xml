@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhy.takeoutcabinet.mapper.CabinetMapper">
+    <resultMap id="cabinetResultMap" type="Cabinet">
+        <id property="cabinetId" column="cabinet_id"/>
+        <result property="cabinetPosition" column="cabinet_position"/>
+        <result property="cabinetNo" column="cabinet_no"/>
+        <result property="cabinetSize" column="cabinet_size"/>
+        <result property="useDate" column="use_date"/>
+        <result property="cabinetStatus" column="cabinet_status"/>
+        <!-- 一对多查询 -->
+        <collection property="orders" ofType="Order">
+            <id property="orderId" column="order_id"/>
+            <result property="orderNo" column="order_no"/>
+            <result property="orderTime" column="order_time"/>
+            <result property="orderPickTime" column="order_pick_time"/>
+            <result property="orderHeat" column="order_mode"/>
+            <result property="orderCurrentTemperature" column="order_current_temperature"/>
+            <result property="orderCabinetNumber" column="order_cabinet_number"/>
+            <result property="orderCode" column="order_code"/>
+            <result property="orderType" column="order_type"/>
+            <result property="orderStatus" column="order_status"/>
+            <result property="orderPayMode" column="order_pay_mode"/>
+            <association property="mode" javaType="Mode">
+                <id property="modeId" column="mode_id"/>
+                <result property="modeName" column="mode_name"/>
+                <result property="modeDescription" column="mode_description"/>
+                <result property="modeStatus" column="mode_status"/>
+            </association>
+            <association property="user" javaType="User">
+                <id property="id" column="id"/>
+                <result property="username" column="username"/>
+                <result property="password" column="password"/>
+                <result property="avatar" column="avatar"/>
+                <result property="phone" column="phone"/>
+                <result property="email" column="email"/>
+                <result property="gender" column="gender"/>
+                <result property="age" column="age"/>
+                <result property="isAdmin" column="is_admin"/>
+                <result property="blacklist" column="blacklist"/>
+            </association>
+        </collection>
+    </resultMap>
+    <!-- 查询所有取餐柜分页 -->
+    <select id="findAll" resultType="Cabinet">
+        select
+               cabinet_id,
+               cabinet_position,
+               cabinet_no,
+               cabinet_size,
+               cabinet_status,
+               use_date
+        from cabinet limit #{startIndex}, #{pageSize}
+    </select>
+    <!-- 无条件查询查询所有 -->
+    <select id="queryAll" resultType="Cabinet">
+        select
+            cabinet_id,
+            cabinet_position,
+            cabinet_no,
+            cabinet_size,
+            cabinet_status,
+            use_date
+        from cabinet where cabinet_status = 1
+    </select>
+    <select id="findTotal" resultType="java.lang.Integer">
+        select count(*) from cabinet;
+    </select>
+    <!-- 查询所有取餐柜模式 -->
+    <select id="queryModes" resultType="Mode">
+        select mode_id, mode_name, mode_status, mode_description from mode
+    </select>
+    <!-- 根据 cabinetId 查询出订单信息 -->
+    <select id="findCabinetWithOrderByCabinetId" resultMap="cabinetResultMap">
+        select c.cabinet_id,
+               c.cabinet_position,
+               c.cabinet_no,
+               c.cabinet_size,
+               c.cabinet_status,
+               c.use_date,
+               o.order_id,
+               o.order_no,
+               o.order_time,
+               o.order_pick_time,
+               o.order_current_temperature,
+               o.order_cabinet_number,
+               o.order_code,
+               o.order_status,
+               o.order_pay_mode,
+               m.mode_id, m.mode_name, m.mode_description, m.mode_status,
+               u.id, u.username, u.phone, u.email
+        from cabinet c left outer join `order` o on c.cabinet_id = o.cid
+        left outer join mode m on o.mid = m.mode_id
+        left outer join user u on o.uid = u.id where cabinet_id = #{cabinetId}
+    </select>
+    <!-- 修改取餐柜 -->
+    <update id="updateCabinetById" parameterType="Cabinet">
+        update cabinet
+        <set>
+            <if test="cabinetPosition != null and cabinetPosition != 'null' and cabinetPosition != ''">
+                cabinet_position = #{cabinetPosition},
+            </if>
+            <if test="cabinetSize != null and cabinetSize != 0">
+                cabinet_size = #{cabinetSize},
+            </if>
+            <if test="useDate != null">
+                use_date = #{useDate},
+            </if>
+            <if test="cabinetStatus != null">
+                cabinet_status = #{cabinetStatus},
+            </if>
+        </set>
+        where cabinet_id = #{cabinetId}
+    </update>
+    <!-- 查询 -->
+    <select id="findCabinetsByPosition" resultType="Cabinet">
+        select cabinet_id,
+               cabinet_position,
+               cabinet_no,
+               cabinet_size,
+               cabinet_status,
+               use_date
+        from cabinet
+        where cabinet_position = #{cabinetPosition}
+    </select>
+    <!-- 添加 -->
+    <insert id="insertCabinet" parameterType="Cabinet">
+        insert into cabinet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cabinetPosition != null and cabinetPosition != ''">cabinet_position, </if>
+            <if test="cabinetNo != null and cabinetPosition != ''">cabinet_no, </if>
+            <if test="cabinetSize != null">cabinet_size, </if>
+            <if test="useDate != null">use_date, </if>
+            <if test="cabinetStatus != null">cabinet_status, </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cabinetPosition != null and cabinetPosition != ''">#{cabinetPosition}, </if>
+            <if test="cabinetNo != null and cabinetPosition != ''">#{cabinetNo}, </if>
+            <if test="cabinetSize != null">#{cabinetSize}, </if>
+            <if test="useDate != null">#{useDate}, </if>
+            <if test="cabinetStatus != null">#{cabinetStatus}, </if>
+        </trim>
+    </insert>
+</mapper>

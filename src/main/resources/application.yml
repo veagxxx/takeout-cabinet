@@ -1,0 +1,43 @@
+# MySQL 数据库连接信息
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/takeout-cabinet_db?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    #    initialSize:5
+    #    minIdle:5
+    #    maxActive:20
+    #    maxWait:60000
+  # 时区配置
+  jackson:
+    time-zone: GMT+8
+  # mail 邮件配置
+  mail:
+    host: smtp.qq.com
+    username: 1608237085@qq.com
+    password: skqrcpmsccqmighg  # 邮箱授权码
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+          required: true
+
+# Mybatis Mapper 文件映射路径
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zhy.takeoutcabinet.entity
+  configuration:
+    map-underscore-to-camel-case: true # 驼峰命名
+
+server:
+  port: 8090
+
+
+#图片上传
+cbs:
+    imagesPath: file:/E:/spring-learn/takeout-cabinet/src/main/resources/static/image/

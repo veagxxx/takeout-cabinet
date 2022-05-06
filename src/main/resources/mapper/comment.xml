@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhy.takeoutcabinet.mapper.CommentMapper">
+
+    <insert id="insertComment" parameterType="Comment">
+        insert into comments
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cabinet.cabinetId != null and cabinet.cabinetId != ''">cabinet_id, </if>
+            <if test="commentUsername != null">comment_username, </if>
+            <if test="star != null and star != ''">star, </if>
+            <if test="content != null">content, </if>
+            <if test="createTime != null">create_time, </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cabinet.cabinetId != null and cabinet.cabinetId != ''">#{cabinet.cabinetId}, </if>
+            <if test="commentUsername != null">#{commentUsername}, </if>
+            <if test="star != null and star != ''">#{star}, </if>
+            <if test="content != null">#{content}, </if>
+            <if test="createTime != null">#{createTime}, </if>
+        </trim>
+    </insert>
+</mapper>
